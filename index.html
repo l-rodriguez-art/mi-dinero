@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f6f7f2">
+<title>Mi Dinero — Control local</title>
+<style>
+:root{
+ --bg:#f6f7f2;--card:#fff;--text:#24322d;--muted:#7c8782;--line:#e8ebe6;
+ --green:#587a68;--green2:#e8f0eb;--red:#c96b68;--red2:#f8e9e8;--yellow:#e7c86e;
+ --shadow:0 10px 30px rgba(35,50,45,.07);--radius:22px;
+}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select{font:inherit}button{border:0;cursor:pointer}.app{max-width:720px;margin:auto;padding:18px 16px 100px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{font-weight:800;font-size:23px}.logo span{color:var(--green)}
+.iconbtn{width:44px;height:44px;border-radius:15px;background:#fff;box-shadow:var(--shadow);font-size:20px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:15px}
+.hero{background:linear-gradient(135deg,#547765,#759584);color:#fff;padding:23px}
+.hero .label{opacity:.8;font-size:13px}.balance{font-size:36px;font-weight:800;margin:5px 0 18px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:rgba(255,255,255,.14);border-radius:16px;padding:12px}.stat small{opacity:.8}.stat b{display:block;font-size:17px;margin-top:3px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:23px 2px 12px}.section-head h2{font-size:18px;margin:0}.link{color:var(--green);background:none;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.budget{padding:16px;border-radius:20px;background:#fff;box-shadow:var(--shadow);cursor:pointer}
+.budget-top{display:flex;justify-content:space-between;align-items:center}.emoji{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;font-size:22px}
+.menu{font-size:19px;background:none;color:var(--muted)}.budget h3{margin:12px 0 4px;font-size:15px}.budget .money{font-weight:800;font-size:20px}.budget small{color:var(--muted)}
+.bar{height:8px;background:#edf0ed;border-radius:20px;overflow:hidden;margin-top:12px}.fill{height:100%;border-radius:20px}
+.empty{text-align:center;color:var(--muted);padding:25px}
+.mov{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.mov:last-child{border:0}
+.movicon{width:42px;height:42px;border-radius:14px;background:var(--green2);display:grid;place-items:center}.movmain{flex:1}.movmain b{display:block;font-size:14px}.movmain small{color:var(--muted)}.plus{color:#4f8769;font-weight:800}.minus{color:var(--red);font-weight:800}
+.bottom{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);width:min(680px,calc(100% - 28px));background:#fff;border-radius:25px;box-shadow:0 12px 35px rgba(0,0,0,.14);display:flex;justify-content:space-around;padding:8px;z-index:20}
+.bottom button{background:none;color:var(--muted);padding:9px 13px;border-radius:16px;font-size:12px}.bottom button.active{background:var(--green2);color:var(--green);font-weight:800}
+.fab{position:fixed;right:22px;bottom:88px;width:58px;height:58px;border-radius:20px;background:var(--green);color:#fff;font-size:28px;box-shadow:0 10px 25px rgba(60,90,75,.28);z-index:21}
+.modal{position:fixed;inset:0;background:rgba(24,35,31,.42);display:none;align-items:flex-end;z-index:50}.modal.show{display:flex}.sheet{background:#fff;width:100%;max-width:720px;margin:auto;border-radius:28px 28px 0 0;padding:22px 18px 28px;max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 18px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{margin-bottom:13px}.field label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px 3px}.field input,.field select{width:100%;border:1px solid var(--line);background:#fafbf9;padding:13px;border-radius:14px;outline:none}.actions{display:flex;gap:9px;margin-top:12px}.btn{flex:1;padding:14px;border-radius:15px;font-weight:800}.primary{background:var(--green);color:#fff}.secondary{background:#eef2ef;color:var(--text)}.danger{background:var(--red2);color:#a44d4b}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:15px}.tab{white-space:nowrap;padding:9px 13px;border-radius:14px;background:#fff;color:var(--muted)}.tab.on{background:var(--green);color:#fff}
+.note{font-size:12px;color:var(--muted);line-height:1.5}.warning{padding:13px;background:#fff7dc;border-radius:15px;color:#766020;font-size:13px}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-80px);background:#26372f;color:#fff;padding:12px 17px;border-radius:15px;z-index:100;transition:.25s;box-shadow:var(--shadow)}.toast.show{transform:translateX(-50%) translateY(0)}
+.progressBig{height:12px;background:#edf0ed;border-radius:20px;overflow:hidden}.progressBig i{display:block;height:100%;background:var(--green);border-radius:20px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,1fr)}.app{padding-top:28px}.sheet{border-radius:28px}}
+</style>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#587a68">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mi Dinero">
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<div class="app">
+<header><div class="logo">Mi <span>Dinero</span></div><button class="iconbtn" onclick="openSettings()">⚙️</button></header>
+<main id="app"></main>
+</div>
+<button class="fab" onclick="quickAdd()">＋</button>
+<nav class="bottom">
+<button id="navHome" class="active" onclick="showHome()">⌂<br>Inicio</button>
+<button onclick="showHistory()">↕<br>Movimientos</button>
+<button onclick="showStats()">◔<br>Estadísticas</button>
+</nav>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const KEY='mi_dinero_local_v3';
+const defaults={budgets:[],movements:[],goals:[],settings:{currency:'MXN',dark:false}};
+let db=load(), view='home';
+
+function load(){try{return {...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return {...defaults}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function money(n){return new Intl.NumberFormat('es-MX',{style:'currency',currency:db.settings.currency||'MXN',maximumFractionDigits:2}).format(Number(n)||0)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200)}
+function totalBalance(){return db.budgets.reduce((s,b)=>s+balance(b.id),0)}
+function spent(bid){return db.movements.filter(m=>m.budgetId===bid&&m.type==='expense').reduce((s,m)=>s+m.amount,0)}
+function added(bid){return db.movements.filter(m=>m.budgetId===bid&&m.type==='addition').reduce((s,m)=>s+m.amount,0)}
+function balance(bid){let b=db.budgets.find(x=>x.id===bid);return b?(Number(b.amount)+added(bid)-spent(bid)):0}
+function pct(b){let base=Math.max(Number(b.amount),0);return base?Math.min(100,Math.max(0,spent(b.id)/base*100)):0}
+function dateStr(d){return new Date(d).toLocaleDateString('es-MX',{day:'2-digit',month:'short'})}
+
+function render(){
+ document.body.classList.toggle('dark',!!db.settings.dark);
+ if(view==='history') return renderHistory();
+ if(view==='stats') return renderStats();
+ renderHome();
+}
+function renderHome(){
+ let total=totalBalance(), spentAll=db.movements.filter(m=>m.type==='expense').reduce((s,m)=>s+m.amount,0);
+ let addAll=db.movements.filter(m=>m.type==='addition').reduce((s,m)=>s+m.amount,0);
+ document.getElementById('app').innerHTML=`
+ <section class="card hero"><div class="label">Dinero disponible</div><div class="balance">${money(total)}</div>
+ <div class="stats"><div class="stat"><small>Gastado</small><b>${money(spentAll)}</b></div><div class="stat"><small>Agregado</small><b>${money(addAll)}</b></div></div></section>
+ <div class="section-head"><h2>Mis presupuestos</h2><button class="link" onclick="openBudget()">+ Nuevo</button></div>
+ ${db.budgets.length?`<div class="grid">${db.budgets.map(b=>budgetHTML(b)).join('')}</div>`:`<div class="card empty">Todavía no tienes presupuestos.<br><button class="btn primary" style="margin-top:12px" onclick="openBudget()">Crear mi primer presupuesto</button></div>`}
+ <div class="section-head"><h2>Últimos movimientos</h2><button class="link" onclick="showHistory()">Ver todos</button></div>
+ <section class="card">${movementsHTML(db.movements.slice().sort((a,b)=>b.date-a.date).slice(0,5))}</section>
+ `;
+}
+function budgetHTML(b){
+ let bal=balance(b.id), p=pct(b);
+ return `<article class="budget" onclick="openBudgetDetail('${b.id}')"><div class="budget-top"><div class="emoji" style="background:${esc(b.color||'#e8f0eb')}">${esc(b.icon||'💰')}</div><button class="menu" onclick="event.stopPropagation();budgetMenu('${b.id}')">⋮</button></div>
+ <h3>${esc(b.name)}</h3><div class="money">${money(bal)}</div><small>de ${money(b.amount)}</small><div class="bar"><div class="fill" style="width:${p}%;background:${p>=90?'#c96b68':esc(b.color||'#587a68')}"></div></div></article>`
+}
+function movementsHTML(ms){
+ if(!ms.length)return `<div class="empty">Aún no hay movimientos.</div>`;
+ return ms.map(m=>{let b=db.budgets.find(x=>x.id===m.budgetId);return `<div class="mov"><div class="movicon">${m.type==='expense'?'🧾':'💵'}</div><div class="movmain"><b>${esc(m.description|| (m.type==='expense'?'Gasto':'Ingreso'))}</b><small>${esc(b?.name||'Presupuesto')} · ${dateStr(m.date)}</small></div><strong class="${m.type==='expense'?'minus':'plus'}">${m.type==='expense'?'−':'+'}${money(m.amount)}</strong></div>`}).join('')
+}
+
+function openBudget(id=''){
+ let b=db.budgets.find(x=>x.id===id)||{name:'',amount:'',period:'Mensual',icon:'💰',color:'#dfece4'};
+ document.getElementById('sheet').innerHTML=`<h2>${id?'Editar presupuesto':'Nuevo presupuesto'}</h2>
+ <div class="field"><label>Nombre</label><input id="bname" value="${esc(b.name)}" placeholder="Ej. Comida"></div>
+ <div class="row"><div class="field"><label>Monto inicial</label><input id="bamount" type="number" min="0" step=".01" value="${b.amount}"></div>
+ <div class="field"><label>Periodo</label><select id="bperiod">${['Semanal','Quincenal','Mensual','Anual','Sin periodo'].map(x=>`<option ${x===b.period?'selected':''}>${x}</option>`).join('')}</select></div></div>
+ <div class="row"><div class="field"><label>Icono</label><select id="bicon">${['💰','🍔','🏠','💡','💧','🚗','🛒','🎮','🐶','❤️','📚','✈️','🎨','📱'].map(x=>`<option ${x===b.icon?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label>Color</label><input id="bcolor" type="color" value="${b.color||'#dfece4'}"></div></div>
+ <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveBudget('${id}')">Guardar</button></div>`;
+ openModal()
+}
+function saveBudget(id){
+ let name=document.getElementById('bname').value.trim(), amount=Number(document.getElementById('bamount').value);
+ if(!name||amount<0)return toast('Completa el nombre y monto');
+ if(id){let b=db.budgets.find(x=>x.id===id);Object.assign(b,{name,amount,period:document.getElementById('bperiod').value,icon:document.getElementById('bicon').value,color:document.getElementById('bcolor').value})}
+ else db.budgets.push({id:uid(),name,amount,period:document.getElementById('bperiod').value,icon:document.getElementById('bicon').value,color:document.getElementById('bcolor').value,createdAt:Date.now()});
+ save();closeModal();render();toast(id?'Presupuesto actualizado':'Presupuesto creado');
+}
+function budgetMenu(id){
+ let b=db.budgets.find(x=>x.id===id);
+ document.getElementById('sheet').innerHTML=`<h2>${esc(b.name)}</h2><div class="actions"><button class="btn primary" onclick="openMovement('${id}','expense')">− Registrar gasto</button><button class="btn secondary" onclick="openMovement('${id}','addition')">+ Agregar dinero</button></div>
+ <div class="actions"><button class="btn secondary" onclick="openBudget('${id}')">Editar</button><button class="btn danger" onclick="deleteBudget('${id}')">Eliminar</button></div>`;
+ openModal()
+}
+function deleteBudget(id){if(confirm('¿Eliminar este presupuesto y sus movimientos?')){db.budgets=db.budgets.filter(b=>b.id!==id);db.movements=db.movements.filter(m=>m.budgetId!==id);save();closeModal();render();toast('Presupuesto eliminado')}}
+function openMovement(bid,type='expense'){
+ let b=db.budgets.find(x=>x.id===bid);
+ document.getElementById('sheet').innerHTML=`<h2>${type==='expense'?'Registrar gasto':'Agregar dinero'}</h2><div class="warning">${type==='expense'?'Disponible en este presupuesto: '+money(balance(bid)):'El dinero se sumará a '+esc(b.name)}</div>
+ <div class="field" style="margin-top:14px"><label>Monto</label><input id="mamount" type="number" min="0" step=".01" placeholder="0.00"></div>
+ <div class="field"><label>Descripción</label><input id="mdesc" placeholder="${type==='expense'?'Ej. Supermercado':'Ej. Depósito'}"></div>
+ <div class="field"><label>Fecha</label><input id="mdate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+ <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancelar</button><button class="btn primary" onclick="saveMovement('${bid}','${type}')">${type==='expense'?'Guardar gasto':'Agregar dinero'}</button></div>`;
+ openModal()
+}
+function saveMovement(bid,type){
+ let amount=Number(document.getElementById('mamount').value);
+ if(!amount||amount<=0)return toast('Escribe un monto válido');
+ if(type==='expense'&&amount>balance(bid))return toast('No tienes suficiente dinero en este presupuesto');
+ db.movements.push({id:uid(),budgetId:bid,type,amount,description:document.getElementById('mdesc').value.trim()||(type==='expense'?'Gasto':'Ingreso'),date:new Date(document.getElementById('mdate').value+'T12:00:00').getTime()});
+ save();closeModal();render();toast(type==='expense'?'Gasto registrado':'Dinero agregado');
+}
+function quickAdd(){
+ if(!db.budgets.length){openBudget();return}
+ document.getElementById('sheet').innerHTML=`<h2>¿Qué quieres hacer?</h2><div class="grid">${db.budgets.map(b=>`<button class="budget" onclick="openMovement('${b.id}','expense')"><div class="emoji">${b.icon}</div><h3>${esc(b.name)}</h3><small>${money(balance(b.id))} disponibles</small></button>`).join('')}</div>`;
+ openModal()
+}
+function openBudgetDetail(id){
+ let b=db.budgets.find(x=>x.id===id), ms=db.movements.filter(m=>m.budgetId===id).sort((a,b)=>b.date-a.date);
+ document.getElementById('sheet').innerHTML=`<h2>${b.icon} ${esc(b.name)}</h2><div class="card" style="box-shadow:none;background:#f5f8f5"><small>Disponible</small><div style="font-size:31px;font-weight:800">${money(balance(id))}</div><small>Inicial: ${money(b.amount)} · Gastado: ${money(spent(id))}</small><div class="progressBig" style="margin-top:12px"><i style="width:${pct(b)}%"></i></div></div>
+ <div class="actions"><button class="btn primary" onclick="openMovement('${id}','expense')">− Gasto</button><button class="btn secondary" onclick="openMovement('${id}','addition')">+ Dinero</button></div>
+ <h3 style="margin-top:22px">Movimientos</h3>${movementsHTML(ms)}`;
+ openModal()
+}
+
+function showHistory(){view='history';render();document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'))}
+function renderHistory(){
+ let ms=db.movements.slice().sort((a,b)=>b.date-a.date);
+ document.getElementById('app').innerHTML=`<div class="section-head"><h2>Movimientos</h2></div><section class="card">${movementsHTML(ms)}</section>`
+}
+function showStats(){view='stats';render();document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'))}
+function renderStats(){
+ let total=totalBalance(), expenses=db.movements.filter(m=>m.type==='expense').reduce((s,m)=>s+m.amount,0), adds=db.movements.filter(m=>m.type==='addition').reduce((s,m)=>s+m.amount,0);
+ let rows=db.budgets.map(b=>`<div style="margin:15px 0"><div style="display:flex;justify-content:space-between"><b>${b.icon} ${esc(b.name)}</b><span>${money(spent(b.id))}</span></div><div class="bar"><div class="fill" style="width:${pct(b)}%;background:${esc(b.color||'#587a68')}"></div></div></div>`).join('');
+ document.getElementById('app').innerHTML=`<div class="section-head"><h2>Estadísticas</h2></div><section class="card"><div class="row"><div><small>Disponible</small><h2>${money(total)}</h2></div><div><small>Gastado</small><h2>${money(expenses)}</h2></div></div><div class="row"><div><small>Agregado</small><h2>${money(adds)}</h2></div><div><small>Presupuestos</small><h2>${db.budgets.length}</h2></div></div></section><section class="card"><h3>Gasto por presupuesto</h3>${rows||'<div class="empty">Crea un presupuesto para ver estadísticas.</div>'}</section>`
+}
+function openSettings(){
+ document.getElementById('sheet').innerHTML=`<h2>Configuración</h2>
+ <div class="card" style="box-shadow:none;background:#f6f8f6"><b>Datos locales</b><p class="note">Tus datos están guardados en este navegador. No se envían a un servidor.</p></div>
+ <div class="actions"><button class="btn primary" onclick="exportData()">💾 Crear respaldo</button><button class="btn secondary" onclick="document.getElementById('file').click()">📥 Restaurar</button></div>
+ <div class="field" style="margin-top:15px"><label>Moneda</label><select id="currency" onchange="db.settings.currency=this.value;save();render()"><option ${db.settings.currency==='MXN'?'selected':''}>MXN</option><option ${db.settings.currency==='USD'?'selected':''}>USD</option><option ${db.settings.currency==='EUR'?'selected':''}>EUR</option></select></div>
+ <div class="actions"><button class="btn danger" onclick="clearData()">🗑️ Borrar todos mis datos</button></div>
+ <p class="note" style="margin-top:16px">Consejo: guarda un respaldo periódicamente, especialmente antes de cambiar de teléfono o limpiar los datos del navegador.</p>`;
+ openModal()
+}
+function exportData(){
+ let blob=new Blob([JSON.stringify({app:'Mi Dinero',version:3,data:db},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mi-dinero-respaldo.json';a.click();URL.revokeObjectURL(a.href);toast('Respaldo creado');}
+function importData(e){
+ let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.data?.budgets||!x.data?.movements)throw 0;db=x.data;save();render();toast('Datos restaurados')}catch{toast('Archivo de respaldo no válido')}};r.readAsText(f);e.target.value=''}
+function clearData(){if(confirm('Esto eliminará todos tus presupuestos y movimientos de este teléfono. ¿Continuar?')){db={...defaults,budgets:[],movements:[],goals:[],settings:{currency:'MXN',dark:false}};save();closeModal();render();toast('Datos eliminados')}}
+function showHome(){view='home';render();document.querySelectorAll('.bottom button').forEach(x=>x.classList.remove('active'));document.getElementById('navHome').classList.add('active')}
+function openModal(){document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.body.insertAdjacentHTML('beforeend','<input id="file" type="file" accept=".json" style="display:none" onchange="importData(event)">');
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>

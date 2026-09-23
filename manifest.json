@@ -1,0 +1,14 @@
+{
+  "name": "Mi Dinero",
+  "short_name": "Mi Dinero",
+  "description": "Control local de presupuestos y gastos.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f2",
+  "theme_color": "#587a68",
+  "orientation": "portrait",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
